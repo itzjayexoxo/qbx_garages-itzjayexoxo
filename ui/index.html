@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pink Parking</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: transparent !important;
+            background-color: transparent !important;
+        }
+
+        #app { display: none !important; }
+        #app.nui-open { display: grid !important; }
+    </style>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main id="app" class="app hidden" aria-hidden="true">
+        <section class="garage-shell" role="dialog" aria-modal="true" aria-label="Vehicle Garage">
+            <header class="shell-header">
+                <div class="brand-block">
+                    <div class="brand-logo" aria-hidden="true">
+                        <svg viewBox="0 0 32 32"><path d="M7 20.5 9.2 14c.5-1.6 2-2.7 3.7-2.7h6.2c1.7 0 3.2 1.1 3.7 2.7l2.2 6.5"/><path d="M5.8 20.5h20.4v5H5.8z"/><path d="M9 25.5v2M23 25.5v2"/><circle cx="10" cy="22.7" r="1.2"/><circle cx="22" cy="22.7" r="1.2"/></svg>
+                    </div>
+                    <div>
+                        <p id="brand-name" class="brand-name">Pink Parking</p>
+                        <p id="tagline" class="tagline">Secure vehicle management</p>
+                    </div>
+                </div>
+
+                <div class="header-location">
+                    <span class="header-label">CURRENT LOCATION</span>
+                    <strong id="garage-label">Pillbox Garage Parking</strong>
+                </div>
+
+                <div class="header-actions">
+                    <div class="header-stat">
+                        <span>AVAILABLE</span>
+                        <strong id="ready-count">0</strong>
+                    </div>
+                    <div class="header-divider"></div>
+                    <div class="header-stat">
+                        <span>TOTAL</span>
+                        <strong id="total-count">0</strong>
+                    </div>
+                    <span id="garage-kind" class="kind-pill">GARAGE</span>
+                    <button id="close-button" class="close-button" aria-label="Close">
+                        <svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7 7 17"/></svg>
+                    </button>
+                </div>
+            </header>
+
+            <div class="shell-body">
+                <aside class="filter-panel">
+                    <div class="filter-section">
+                        <span class="section-label">VEHICLES</span>
+                        <button class="filter-nav active" data-filter="all">
+                            <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M5 14.5 6.6 10c.4-1.2 1.5-2 2.8-2h5.2c1.3 0 2.4.8 2.8 2l1.6 4.5"/><path d="M3.5 14.5h17v5h-17z"/><circle cx="7" cy="17" r="1"/><circle cx="17" cy="17" r="1"/></svg></span>
+                            <span>All Vehicles</span>
+                        </button>
+                        <button class="filter-nav" data-filter="ready">
+                            <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m6.5 12 3.2 3.2 7.8-7.8"/></svg></span>
+                            <span>Available</span>
+                        </button>
+                        <button class="filter-nav" data-filter="unavailable">
+                            <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="m8.5 8.5 7 7"/></svg></span>
+                            <span>Unavailable</span>
+                        </button>
+                    </div>
+
+                    <div class="filter-section filter-meta">
+                        <span class="section-label">GARAGE</span>
+                        <div class="meta-row"><span>Type</span><strong id="side-kind">Public</strong></div>
+                        <div class="meta-row"><span>Category</span><strong id="side-category">Cars</strong></div>
+                    </div>
+
+                    <div class="side-note">
+                        <span class="note-dot"></span>
+                        <p id="garage-description">Select a vehicle to view its condition and retrieval status.</p>
+                    </div>
+                </aside>
+
+                <section class="vehicle-browser">
+                    <div class="browser-header">
+                        <div>
+                            <span class="section-label">YOUR COLLECTION</span>
+                            <h1>Stored Vehicles</h1>
+                        </div>
+                        <label class="search-box">
+                            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/></svg>
+                            <input id="search-input" type="text" placeholder="Search name or plate" autocomplete="off" />
+                        </label>
+                    </div>
+
+                    <div id="empty-state" class="empty-state hidden">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 32 32"><path d="M7 20.5 9.2 14c.5-1.6 2-2.7 3.7-2.7h6.2c1.7 0 3.2 1.1 3.7 2.7l2.2 6.5"/><path d="M5.8 20.5h20.4v5H5.8z"/></svg>
+                        </div>
+                        <h2>No vehicles found</h2>
+                        <p>Change your search or select another filter.</p>
+                    </div>
+
+                    <div id="vehicle-list" class="vehicle-grid"></div>
+                </section>
+
+                <aside class="details-panel">
+                    <div id="vehicle-details" class="vehicle-details">
+                        <div class="details-heading">
+                            <div>
+                                <span id="vehicle-status" class="status-pill">READY</span>
+                                <p id="vehicle-brand" class="vehicle-brand">MAXWELL</p>
+                                <h2 id="vehicle-name">Asbo</h2>
+                            </div>
+                            <span id="vehicle-category" class="category-badge">COMPACTS</span>
+                        </div>
+
+                        <div id="car-art" class="car-preview"></div>
+
+                        <div class="vehicle-identity">
+                            <span>NUMBER PLATE</span>
+                            <strong id="vehicle-plate">HASG94K8</strong>
+                        </div>
+
+                        <div class="health-section">
+                            <span class="section-label">VEHICLE CONDITION</span>
+                            <article class="health-row">
+                                <div class="health-label"><span>Body</span><strong id="body-value">100%</strong></div>
+                                <div class="progress-track"><div id="body-bar" class="progress-fill"></div></div>
+                            </article>
+                            <article class="health-row">
+                                <div class="health-label"><span>Engine</span><strong id="engine-value">100%</strong></div>
+                                <div class="progress-track"><div id="engine-bar" class="progress-fill"></div></div>
+                            </article>
+                            <article class="health-row">
+                                <div class="health-label"><span>Fuel</span><strong id="fuel-value">100%</strong></div>
+                                <div class="progress-track"><div id="fuel-bar" class="progress-fill"></div></div>
+                            </article>
+                        </div>
+
+                        <div id="fee-card" class="fee-card hidden">
+                            <span>RELEASE FEE</span>
+                            <strong id="fee-value">$0</strong>
+                        </div>
+
+                        <div id="hold-card" class="hold-card hidden">
+                            <div class="hold-symbol"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+                            <div><strong>Vehicle unavailable</strong><p id="hold-message">This vehicle cannot be retrieved here.</p></div>
+                        </div>
+
+                        <button id="retrieve-button" class="retrieve-button">
+                            <span id="retrieve-label">Take Vehicle Out</span>
+                            <svg viewBox="0 0 24 24"><path d="M5 12h14M14 7l5 5-5 5"/></svg>
+                        </button>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>
